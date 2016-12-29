@@ -3,8 +3,8 @@
 interface PuzzleInterface
 {
     /**
-     * @param string $inputFile
+     * @param string $input
      * @return mixed
      */
-    public function processInputFile(string $inputFile);
+    public function processInput(string $input);
 }

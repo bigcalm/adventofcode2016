@@ -12,4 +12,10 @@ class Puzzle1Spec extends ObjectBehavior
     {
         $this->shouldHaveType(Puzzle1::class);
     }
+
+    function it_converts_input_sting_into_an_array_and_stores_as_property()
+    {
+        $this->processInput('R2, L3');
+        $this->data->shouldBeArray();
+    }
 }

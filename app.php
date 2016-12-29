@@ -17,6 +17,6 @@ $puzzleClass = new $puzzleClassName();
 
 $input = file_get_contents('src/Day' . $day . '/input.txt');
 
-$result = $puzzleClass->processInputFile($input);
+$result = $puzzleClass->processInput($input);
 
 echo 'Result: ' . $result . PHP_EOL;
