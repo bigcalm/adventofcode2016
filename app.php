@@ -10,7 +10,7 @@ if ($argc != 3) {
 $day = $argv[1];
 $puzzle = $argv[2];
 
-$puzzleClassName = 'Day' . $day . '/Puzzle' . $puzzle;
+$puzzleClassName = 'Day' . $day . '\Puzzle' . $puzzle;
 
 /** @var PuzzleInterface $puzzleClass */
 $puzzleClass = new $puzzleClassName();
