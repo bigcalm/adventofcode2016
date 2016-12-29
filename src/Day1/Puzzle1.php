@@ -28,6 +28,9 @@ class Puzzle1 implements PuzzleInterface
     /** @var int $computedDistance */
     protected $computedDistance = 0;
 
+    /** @var array $locationHistory */
+    protected $locationHistory = [];
+
     public function processInput(string $input)
     {
         $this->data = $this->parseString($input);
@@ -106,6 +109,8 @@ class Puzzle1 implements PuzzleInterface
                     $this->currentLocation['x'] -= $datum['distance'];
                     break;
             }
+
+            $this->locationHistory[] = $this->currentLocation;
         }
     }
 
