@@ -9,5 +9,8 @@
     "psr-4": {
       "": "src"
     }
+  },
+  "require": {
+    "davefx/phplot": "^6.2"
   }
 }
