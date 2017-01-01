@@ -31,6 +31,11 @@ class Puzzle1 implements PuzzleInterface
     /** @var array $locationHistory */
     protected $locationHistory = [];
 
+    public function __construct(array $options = [])
+    {
+        // no options to manage
+    }
+
     public function processInput(string $input)
     {
         $this->data = $this->parseString($input);

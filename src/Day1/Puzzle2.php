@@ -2,17 +2,32 @@
 
 namespace Day1;
 
+use PuzzleInterface;
 use PHPlot;
 
-class Puzzle2 extends Puzzle1
+class Puzzle2 extends Puzzle1 implements PuzzleInterface
 {
+    /** @var bool $graphOutput */
+    protected $graphOutput = false;
+
+    public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+
+        if (in_array('--graph-output', $options)) {
+            $this->graphOutput = true;
+        }
+    }
+
     public function processInput(string $input)
     {
         parent::processInput($input);
 
         $this->setCurrentLocationAsFirstLocationVisitedTwice();
 
-        $this->createGraphFromLocationHistory();
+        if ($this->graphOutput) {
+            $this->createGraphFromLocationHistory();
+        }
 
         parent::computeDistance();
 
