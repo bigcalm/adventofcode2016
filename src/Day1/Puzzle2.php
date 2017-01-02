@@ -10,6 +10,9 @@ class Puzzle2 extends Puzzle1 implements PuzzleInterface
     /** @var bool $graphOutput */
     protected $graphOutput = false;
 
+    /** @var array $visited */
+    protected $visited = [];
+
     public function __construct(array $options = [])
     {
         parent::__construct($options);
@@ -36,21 +39,74 @@ class Puzzle2 extends Puzzle1 implements PuzzleInterface
 
     protected function setCurrentLocationAsFirstLocationVisitedTwice()
     {
-        $locationCounts = [];
+        $this->currentLocation = ['x' => 0, 'y' => 0];
+
+        // walk through location history, one block at a time
 
         foreach ($this->locationHistory as $datum) {
-            $location = 'x' . $datum['x'] . 'y' . $datum['y'];
 
-            if (!isset($locationCounts[$location])) {
-                $locationCounts[$location] = 0;
+            if ($this->currentLocation['x'] < $datum['x']) {
+                for ($i = $this->currentLocation['x']; $i < $datum['x']; $i++) {
+                    if (!isset($this->visited[$i][$this->currentLocation['y']])) {
+                        $this->visited[$i][$this->currentLocation['y']] = 0;
+                    }
+                    $this->visited[$i][$this->currentLocation['y']]++;
+
+                    // break out of the for loop and foreach loop with the current location set
+                    if ($this->visited[$i][$this->currentLocation['y']] == 2) {
+                        $this->currentLocation['x'] = $i;
+                        break 2;
+                    }
+                }
             }
 
-            $locationCounts[$location]++;
+            if ($this->currentLocation['x'] > $datum['x']) {
+                for ($i = $this->currentLocation['x']; $i > $datum['x']; $i--) {
+                    if (!isset($this->visited[$i][$this->currentLocation['y']])) {
+                        $this->visited[$i][$this->currentLocation['y']] = 0;
+                    }
+                    $this->visited[$i][$this->currentLocation['y']]++;
 
-            if ($locationCounts[$location] == 2) {
-                $this->currentLocation = $datum;
-                break;
+                    // break out of the for loop and foreach loop with the current location set
+                    if ($this->visited[$i][$this->currentLocation['y']] == 2) {
+                        $this->currentLocation['x'] = $i;
+                        break 2;
+                    }
+                }
             }
+
+            if ($this->currentLocation['y'] < $datum['y']) {
+                for ($i = $this->currentLocation['y']; $i < $datum['y']; $i++) {
+                    if (!isset($this->visited[$this->currentLocation['x']][$i])) {
+                        $this->visited[$this->currentLocation['x']][$i] = 0;
+                    }
+                    $this->visited[$this->currentLocation['x']][$i]++;
+
+                    // break out of the for loop and foreach loop with the current location set
+                    if ($this->visited[$this->currentLocation['x']][$i] == 2) {
+                        $this->currentLocation['y'] = $i;
+                        break 2;
+                    }
+                }
+            }
+
+            if ($this->currentLocation['y'] > $datum['y']) {
+                for ($i = $this->currentLocation['y']; $i > $datum['y']; $i--) {
+                    if (!isset($this->visited[$this->currentLocation['x']][$i])) {
+                        $this->visited[$this->currentLocation['x']][$i] = 0;
+                    }
+                    $this->visited[$this->currentLocation['x']][$i]++;
+
+                    // break out of the for loop and foreach loop with the current location set
+                    if ($this->visited[$this->currentLocation['x']][$i] == 2) {
+                        $this->currentLocation['y'] = $i;
+                        break 2;
+                    }
+                }
+            }
+
+            // All bits covered, set the location
+            $this->currentLocation = $datum;
         }
     }
 
