@@ -21,7 +21,7 @@ class Puzzle1 implements PuzzleInterface
 
     public function processInput(string $input)
     {
-        $this->data = $this->parseString($input);
+        $this->parseString($input);
     }
 
     public function parseString(string $inputString)
