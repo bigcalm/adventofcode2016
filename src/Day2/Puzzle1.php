@@ -6,7 +6,7 @@ use PuzzleInterface;
 
 class Puzzle1 implements PuzzleInterface
 {
-    const KEYPAD = [
+    protected $keypad = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9],
@@ -15,8 +15,8 @@ class Puzzle1 implements PuzzleInterface
     /** @var array $instructions */
     public $instructions = [];
 
-    /** @var int $lastDigit */
-    public $lastDigit;
+    /** @var int $lastKey */
+    public $lastKey;
 
     public function __construct(array $options = [])
     {
@@ -44,27 +44,43 @@ class Puzzle1 implements PuzzleInterface
     }
 
     /**
-     * @param int $digit
-     * @return array [$row, $column]
-     * @throws \Exception when digit is not found within KEYPAD array const
+     * @return array
      */
-    public function locateDigit(int $digit)
+    public function getKeypad()
     {
-        // find which row our digit is in
+        return $this->keypad;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastKey()
+    {
+        return $this->lastKey;
+    }
+
+    /**
+     * @param int|string $key
+     * @return array [$row, $column]
+     * @throws \Exception when key is not found within $this->keypad array const
+     */
+    public function locateKey($key)
+    {
+        // find which row our key is in
         $row = -1;
-        for ($i = 0; $i <= 2; $i++) {
-            if (in_array($digit, self::KEYPAD[$i])) {
+        for ($i = 0; $i < count($this->keypad); $i++) {
+            if (in_array($key, $this->keypad[$i])) {
                 $row = $i;
                 break;
             }
         }
 
         if ($row < 0) {
-            throw new \Exception(sprintf('Digit "%s" is not within KEYPAD', $digit));
+            throw new \Exception(sprintf('Key "%s" is not within $this->keypad', $key));
         }
 
-        // find the position within the row for our digit
-        $column = array_search($digit, self::KEYPAD[$row]);
+        // find the position within the row for our key
+        $column = array_search($key, $this->keypad[$row]);
 
         return [$row, $column];
     }
@@ -74,7 +90,7 @@ class Puzzle1 implements PuzzleInterface
      */
     public function moveUp()
     {
-        list($row, $column) = $this->locateDigit($this->lastDigit);
+        list($row, $column) = $this->locateKey($this->lastKey);
 
         $targetRow = $row - 1;
 
@@ -83,7 +99,7 @@ class Puzzle1 implements PuzzleInterface
             $targetRow = $row;
         }
 
-        $this->lastDigit = self::KEYPAD[$targetRow][$column];
+        $this->lastKey = $this->keypad[$targetRow][$column];
 
         return $this;
     }
@@ -93,16 +109,16 @@ class Puzzle1 implements PuzzleInterface
      */
     public function moveDown()
     {
-        list($row, $column) = $this->locateDigit($this->lastDigit);
+        list($row, $column) = $this->locateKey($this->lastKey);
 
         $targetRow = $row + 1;
 
         // don't go below bottom row
-        if ($targetRow >= count(self::KEYPAD) ) {
+        if ($targetRow >= count($this->keypad) ) {
             $targetRow = $row;
         }
 
-        $this->lastDigit = self::KEYPAD[$targetRow][$column];
+        $this->lastKey = $this->keypad[$targetRow][$column];
 
         return $this;
     }
@@ -112,7 +128,7 @@ class Puzzle1 implements PuzzleInterface
      */
     public function moveLeft()
     {
-        list($row, $column) = $this->locateDigit($this->lastDigit);
+        list($row, $column) = $this->locateKey($this->lastKey);
 
         $targetColumn = $column - 1;
 
@@ -121,7 +137,7 @@ class Puzzle1 implements PuzzleInterface
             $targetColumn = $column;
         }
 
-        $this->lastDigit = self::KEYPAD[$row][$targetColumn];
+        $this->lastKey = $this->keypad[$row][$targetColumn];
 
         return $this;
     }
@@ -131,31 +147,31 @@ class Puzzle1 implements PuzzleInterface
      */
     public function moveRight()
     {
-        list($row, $column) = $this->locateDigit($this->lastDigit);
+        list($row, $column) = $this->locateKey($this->lastKey);
 
         $targetColumn = $column + 1;
 
         // don't go left of 1st column
-        if ($targetColumn >= count(self::KEYPAD[$row])) {
+        if ($targetColumn >= count($this->keypad[$row])) {
             $targetColumn = $column;
         }
 
-        $this->lastDigit = self::KEYPAD[$row][$targetColumn];
+        $this->lastKey = $this->keypad[$row][$targetColumn];
 
         return $this;
     }
 
     /**
-     * @param int $startDigit
+     * @param int|string $startKey
      * @param string $instruction
-     * @return int $currentDigit
+     * @return int $currentKey
      * @throws \Exception when an unknown direction is given
      */
-    public function followInstructions(int $startDigit, string $instruction)
+    public function followInstructions($startKey, string $instruction)
     {
         $stringLength = strlen($instruction);
 
-        $this->lastDigit = $startDigit;
+        $this->lastKey = $startKey;
 
         for ($i = 0; $i < $stringLength; $i++) {
             $char = substr($instruction, $i, 1);
@@ -181,17 +197,17 @@ class Puzzle1 implements PuzzleInterface
             }
         }
 
-        return $this->lastDigit;
+        return $this->lastKey;
     }
 
     public function followMultipleLinesOfInstructions(array $multipleInstructions)
     {
         $completeCode = '';
-        $currentDigit = 5;
+        $currentKey = 5;
 
         foreach ($multipleInstructions as $instruction) {
-            $currentDigit = $this->followInstructions($currentDigit, $instruction);
-            $completeCode .= $currentDigit;
+            $currentKey = $this->followInstructions($currentKey, $instruction);
+            $completeCode .= $currentKey;
         }
 
         return $completeCode;
