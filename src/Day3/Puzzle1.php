@@ -9,6 +9,9 @@ class Puzzle1 implements PuzzleInterface
     /** @var array $numberSets */
     protected $numberSets = [];
 
+    /** @var int $numberOfValidTriangleMeasurements */
+    protected $numberOfValidTriangleMeasurements = 0;
+
     /**
      * @return array
      */
@@ -28,6 +31,14 @@ class Puzzle1 implements PuzzleInterface
         return $this;
     }
 
+    /**
+     * @return int
+     */
+    public function getNumberOfValidTriangleMeasurements()
+    {
+        return $this->numberOfValidTriangleMeasurements;
+    }
+
     public function __construct(array $options = [])
     {
         // no options to manage
@@ -36,6 +47,10 @@ class Puzzle1 implements PuzzleInterface
     public function processInput(string $input)
     {
         $this->parseString($input);
+
+        $this->countTotalNumberOfValidTriangleMeasurements();
+
+        return $this->getNumberOfValidTriangleMeasurements();
     }
 
     public function parseString($inputString)
@@ -56,5 +71,34 @@ class Puzzle1 implements PuzzleInterface
             },
             $inputArray
         );
+    }
+
+    /**
+     * @param array $numbersSet
+     * @return bool
+     */
+    public function numberSetAreValidMeasurementsForATriangle(array $numbersSet)
+    {
+        if ($numbersSet[0] + $numbersSet[1] > $numbersSet[2]
+            && $numbersSet[0] + $numbersSet[2] > $numbersSet[1]
+            && $numbersSet[1] + $numbersSet[2] > $numbersSet[0]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return $this
+     */
+    public function countTotalNumberOfValidTriangleMeasurements()
+    {
+        foreach ($this->numberSets as $numberSet) {
+            if ($this->numberSetAreValidMeasurementsForATriangle($numberSet)) {
+                $this->numberOfValidTriangleMeasurements++;
+            }
+        }
+
+        return $this;
     }
 }

@@ -9,6 +9,7 @@ use Prophecy\Argument;
 class Puzzle1Spec extends ObjectBehavior
 {
     public $exampleNumbers = "  5 10 25
+3 4 5
 ";
 
     function it_is_initializable()
@@ -20,7 +21,28 @@ class Puzzle1Spec extends ObjectBehavior
     {
         $this->parseString($this->exampleNumbers);
         $this->getNumberSets()->shouldBeArray();
-        $this->getNumberSets()->shouldHaveCount(1);
+        $this->getNumberSets()->shouldHaveCount(2);
         $this->getNumberSets()[0]->shouldHaveCount(3);
+    }
+
+    public function it_tests_if_a_number_set_is_not_a_valid_set_of_triangle_measurements()
+    {
+        $this->parseString($this->exampleNumbers);
+
+        $this->numberSetAreValidMeasurementsForATriangle($this->getNumberSets()[0])->shouldBe(false);
+    }
+
+    public function it_tests_if_a_number_set_is_a_valid_set_of_triangle_measurements()
+    {
+        $this->parseString($this->exampleNumbers);
+
+        $this->numberSetAreValidMeasurementsForATriangle($this->getNumberSets()[1])->shouldBe(true);
+    }
+
+    public function it_counts_the_number_of_valid_sets_of_triangle_measurements()
+    {
+        $this->parseString($this->exampleNumbers);
+
+        $this->countTotalNumberOfValidTriangleMeasurements()->getNumberOfValidTriangleMeasurements()->shouldBe(1);
     }
 }
