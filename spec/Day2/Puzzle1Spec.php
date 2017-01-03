@@ -29,12 +29,8 @@ UUUUD";
         $this->locateDigit(5)->shouldBe([1, 1]);
     }
 
-    public function it_correctly_moves_up()
+    public function it_moves_up()
     {
-        $this->moveUp(1)->shouldBe(1);
-        $this->moveUp(2)->shouldBe(2);
-        $this->moveUp(3)->shouldBe(3);
-
         $this->moveUp(4)->shouldBe(1);
         $this->moveUp(5)->shouldBe(2);
         $this->moveUp(6)->shouldBe(3);
@@ -42,9 +38,26 @@ UUUUD";
         $this->moveUp(7)->shouldBe(4);
         $this->moveUp(8)->shouldBe(5);
         $this->moveUp(9)->shouldBe(6);
+
+
+        // this can also be written as:
+        $this->moveUp(Puzzle1::KEYPAD[1][0])->shouldBe(Puzzle1::KEYPAD[0][0]); // 4 -> 1
+        $this->moveUp(Puzzle1::KEYPAD[1][1])->shouldBe(Puzzle1::KEYPAD[0][1]); // 5 -> 2
+        $this->moveUp(Puzzle1::KEYPAD[1][2])->shouldBe(Puzzle1::KEYPAD[0][2]); // 6 -> 3
+
+        $this->moveUp(Puzzle1::KEYPAD[2][0])->shouldBe(Puzzle1::KEYPAD[1][0]); // 7 -> 4
+        $this->moveUp(Puzzle1::KEYPAD[2][1])->shouldBe(Puzzle1::KEYPAD[1][1]); // 8 -> 5
+        $this->moveUp(Puzzle1::KEYPAD[2][2])->shouldBe(Puzzle1::KEYPAD[1][2]); // 9 -> 6
     }
 
-    public function it_correctly_moves_down()
+    public function it_does_not_move_above_1st_row()
+    {
+        $this->moveUp(1)->shouldBe(1);
+        $this->moveUp(2)->shouldBe(2);
+        $this->moveUp(3)->shouldBe(3);
+    }
+
+    public function it_moves_down()
     {
         $this->moveDown(1)->shouldBe(4);
         $this->moveDown(2)->shouldBe(5);
@@ -53,39 +66,54 @@ UUUUD";
         $this->moveDown(4)->shouldBe(7);
         $this->moveDown(5)->shouldBe(8);
         $this->moveDown(6)->shouldBe(9);
+    }
 
+    public function it_does_not_move_below_last_row()
+    {
         $this->moveDown(7)->shouldBe(7);
         $this->moveDown(8)->shouldBe(8);
         $this->moveDown(9)->shouldBe(9);
     }
 
-    public function it_correctly_moves_left()
+    public function it_moves_left()
     {
-        $this->moveLeft(1)->shouldBe(1);
         $this->moveLeft(2)->shouldBe(1);
         $this->moveLeft(3)->shouldBe(2);
 
-        $this->moveLeft(4)->shouldBe(4);
         $this->moveLeft(5)->shouldBe(4);
         $this->moveLeft(6)->shouldBe(5);
 
-        $this->moveLeft(7)->shouldBe(7);
         $this->moveLeft(8)->shouldBe(7);
         $this->moveLeft(9)->shouldBe(8);
     }
 
-    public function it_correctly_moves_right()
+    public function it_does_not_move_left_of_1st_column()
+    {
+        $this->moveLeft(1)->shouldBe(1);
+
+        $this->moveLeft(4)->shouldBe(4);
+
+        $this->moveLeft(7)->shouldBe(7);
+    }
+
+    public function it_moves_right()
     {
         $this->moveRight(1)->shouldBe(2);
         $this->moveRight(2)->shouldBe(3);
-        $this->moveRight(3)->shouldBe(3);
 
         $this->moveRight(4)->shouldBe(5);
         $this->moveRight(5)->shouldBe(6);
-        $this->moveRight(6)->shouldBe(6);
 
         $this->moveRight(7)->shouldBe(8);
         $this->moveRight(8)->shouldBe(9);
+    }
+
+    public function it_does_not_move_right_of_last_column()
+    {
+        $this->moveRight(3)->shouldBe(3);
+
+        $this->moveRight(6)->shouldBe(6);
+
         $this->moveRight(9)->shouldBe(9);
     }
 
