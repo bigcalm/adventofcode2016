@@ -12,7 +12,11 @@ class Puzzle1 implements PuzzleInterface
         [7, 8, 9],
     ];
 
+    /** @var array $instructions */
     public $instructions = [];
+
+    /** @var int $lastDigit */
+    public $lastDigit;
 
     public function __construct(array $options = [])
     {
@@ -22,6 +26,7 @@ class Puzzle1 implements PuzzleInterface
     public function processInput(string $input)
     {
         $this->parseString($input);
+        return $this->followMultipleLinesOfInstructions($this->instructions);
     }
 
     public function parseString(string $inputString)
@@ -33,7 +38,7 @@ class Puzzle1 implements PuzzleInterface
         $inputString = str_replace("\n\n", "\n", $inputString);
 
         // split the string into an array
-        $inputArray = explode("\n", $inputString);
+        $inputArray = explode("\n", trim($inputString));
 
         $this->instructions = $inputArray;
     }
@@ -65,12 +70,11 @@ class Puzzle1 implements PuzzleInterface
     }
 
     /**
-     * @param int $fromDigit
-     * @return int
+     * @return $this
      */
-    public function moveUp(int $fromDigit)
+    public function moveUp()
     {
-        list($row, $column) = $this->locateDigit($fromDigit);
+        list($row, $column) = $this->locateDigit($this->lastDigit);
 
         $targetRow = $row - 1;
 
@@ -79,16 +83,17 @@ class Puzzle1 implements PuzzleInterface
             $targetRow = $row;
         }
 
-        return self::KEYPAD[$targetRow][$column];
+        $this->lastDigit = self::KEYPAD[$targetRow][$column];
+
+        return $this;
     }
 
     /**
-     * @param int $fromDigit
-     * @return int
+     * @return $this
      */
-    public function moveDown(int $fromDigit)
+    public function moveDown()
     {
-        list($row, $column) = $this->locateDigit($fromDigit);
+        list($row, $column) = $this->locateDigit($this->lastDigit);
 
         $targetRow = $row + 1;
 
@@ -97,16 +102,17 @@ class Puzzle1 implements PuzzleInterface
             $targetRow = $row;
         }
 
-        return self::KEYPAD[$targetRow][$column];
+        $this->lastDigit = self::KEYPAD[$targetRow][$column];
+
+        return $this;
     }
 
     /**
-     * @param int $fromDigit
-     * @return int
+     * @return $this
      */
-    public function moveLeft(int $fromDigit)
+    public function moveLeft()
     {
-        list($row, $column) = $this->locateDigit($fromDigit);
+        list($row, $column) = $this->locateDigit($this->lastDigit);
 
         $targetColumn = $column - 1;
 
@@ -115,16 +121,17 @@ class Puzzle1 implements PuzzleInterface
             $targetColumn = $column;
         }
 
-        return self::KEYPAD[$row][$targetColumn];
+        $this->lastDigit = self::KEYPAD[$row][$targetColumn];
+
+        return $this;
     }
 
     /**
-     * @param int $fromDigit
-     * @return int
+     * @return $this
      */
-    public function moveRight(int $fromDigit)
+    public function moveRight()
     {
-        list($row, $column) = $this->locateDigit($fromDigit);
+        list($row, $column) = $this->locateDigit($this->lastDigit);
 
         $targetColumn = $column + 1;
 
@@ -133,6 +140,60 @@ class Puzzle1 implements PuzzleInterface
             $targetColumn = $column;
         }
 
-        return self::KEYPAD[$row][$targetColumn];
+        $this->lastDigit = self::KEYPAD[$row][$targetColumn];
+
+        return $this;
+    }
+
+    /**
+     * @param int $startDigit
+     * @param string $instruction
+     * @return int $currentDigit
+     * @throws \Exception when an unknown direction is given
+     */
+    public function followInstructions(int $startDigit, string $instruction)
+    {
+        $stringLength = strlen($instruction);
+
+        $this->lastDigit = $startDigit;
+
+        for ($i = 0; $i < $stringLength; $i++) {
+            $char = substr($instruction, $i, 1);
+            switch($char) {
+                case 'U':
+                    $this->moveUp();
+                    break;
+
+                case 'D':
+                    $this->moveDown();
+                    break;
+
+                case 'L':
+                    $this->moveLeft();
+                    break;
+
+                case 'R':
+                    $this->moveRight();
+                    break;
+
+                default:
+                    throw new \Exception(sprintf('Unknown direction "%s"', $char));
+            }
+        }
+
+        return $this->lastDigit;
+    }
+
+    public function followMultipleLinesOfInstructions(array $multipleInstructions)
+    {
+        $completeCode = '';
+        $currentDigit = 5;
+
+        foreach ($multipleInstructions as $instruction) {
+            $currentDigit = $this->followInstructions($currentDigit, $instruction);
+            $completeCode .= $currentDigit;
+        }
+
+        return $completeCode;
     }
 }
