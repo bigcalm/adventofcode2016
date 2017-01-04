@@ -25,6 +25,9 @@ class Room
     /** @var bool $validChecksum */
     protected $validChecksum = false;
 
+    /** @var string $decryptedName */
+    protected $decryptedName = '';
+
     /**
      * @return string
      */
@@ -82,10 +85,18 @@ class Room
     }
 
     /**
-     * @param string $raw
-     * @return $this
+     * @return string
      */
-    public function setRaw(string $raw)
+    public function getDecryptedName(): string
+    {
+        return $this->decryptedName;
+    }
+
+    /**
+     * @param string $raw
+     * @return Room
+     */
+    public function setRaw(string $raw): Room
     {
         $this->raw = $raw;
 
@@ -94,9 +105,9 @@ class Room
 
     /**
      * @param string $checksum
-     * @return $this
+     * @return Room
      */
-    public function setChecksum(string $checksum)
+    public function setChecksum(string $checksum): Room
     {
         $this->checksum = $checksum;
 
@@ -105,9 +116,9 @@ class Room
 
     /**
      * @param int $sectorId
-     * @return $this
+     * @return Room
      */
-    public function setSectorId(int $sectorId)
+    public function setSectorId(int $sectorId): Room
     {
         $this->sectorId = $sectorId;
 
@@ -116,9 +127,9 @@ class Room
 
     /**
      * @param string $encryptedName
-     * @return $this
+     * @return Room
      */
-    public function setEncryptedName(string $encryptedName)
+    public function setEncryptedName(string $encryptedName): Room
     {
         $this->encryptedName = $encryptedName;
 
@@ -127,9 +138,9 @@ class Room
 
     /**
      * @param array $characterFrequency
-     * @return $this
+     * @return Room
      */
-    public function setCharacterFrequency(array $characterFrequency)
+    public function setCharacterFrequency(array $characterFrequency): Room
     {
         $this->characterFrequency = $characterFrequency;
 
@@ -138,9 +149,9 @@ class Room
 
     /**
      * @param string $topFiveCharacters
-     * @return $this
+     * @return Room
      */
-    public function setTopFiveCharacters(string $topFiveCharacters)
+    public function setTopFiveCharacters(string $topFiveCharacters): Room
     {
         $this->topFiveCharacters = $topFiveCharacters;
 
@@ -149,11 +160,22 @@ class Room
 
     /**
      * @param bool $validChecksum
-     * @return $this
+     * @return Room
      */
-    public function setValidChecksum(bool $validChecksum)
+    public function setValidChecksum(bool $validChecksum): Room
     {
         $this->validChecksum = $validChecksum;
+
+        return $this;
+    }
+
+    /**
+     * @param string $decryptedName
+     * @return Room
+     */
+    public function setDecryptedName(string $decryptedName): Room
+    {
+        $this->decryptedName = $decryptedName;
 
         return $this;
     }
