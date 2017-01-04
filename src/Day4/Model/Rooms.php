@@ -6,51 +6,63 @@ use Day4\Entity\Room;
 
 class Rooms
 {
-    /** @var \SplObjectStorage $rooms  */
-    protected $rooms;
+    /** @var Room[] $storage  */
+    protected $storage = [];
 
-    public function __construct()
+    /**
+     * @param Room $room
+     * @return Rooms
+     */
+    public function addRoom(Room $room): Rooms
     {
-        if ($this->rooms === null) {
-            $this->rooms = new \SplObjectStorage();
-        }
+        $this->storage[] = $room;
+
+        return $this;
     }
 
     /**
-     * @return \SplObjectStorage
+     * @param Room $room
+     * @return Rooms
      */
-    public function getRooms(): \SplObjectStorage
-    {
-        return $this->rooms;
-    }
-
-    public function addRoom(Room $room): Rooms
-    {
-        $this->rooms->attach($room);
-
-        return $this;
-    }
-
     public function delRoom(Room $room): Rooms
     {
-        $this->rooms->detach($room);
+        foreach ($this->storage as $key => $storedRoom) {
+            if ($storedRoom === $room) {
+                unset($this->storage[$key]);
+            }
+        }
 
         return $this;
+    }
+
+    public function roomExists(Room $room): bool
+    {
+        foreach ($this->storage as $key => $storedRoom) {
+            if ($storedRoom === $room) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return Room[]
+     */
+    public function findAll(): array
+    {
+        return $this->storage;
     }
 
     /**
      * @param string $rawString
      * @return Room|null
      */
-    public function getRoomByRaw(string $rawString)
+    public function findByRaw(string $rawString)
     {
-        $this->rooms->rewind();
-
-        while ($this->rooms->valid()) {
-            /** @var Room $object */
-            $object = $this->rooms->current();
-            if ($object->getRaw() == $rawString) {
-                return $object;
+        foreach ($this->storage as $room) {
+            if ($room->getRaw() == $rawString) {
+                return $room;
             }
         }
 
