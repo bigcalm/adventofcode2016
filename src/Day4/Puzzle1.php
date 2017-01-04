@@ -3,22 +3,28 @@
 namespace Day4;
 
 use PuzzleInterface;
+use Day4\Entity\Room;
+use Day4\Model\Rooms;
 
 class Puzzle1 implements PuzzleInterface
 {
-    /** @var array $rooms */
-    protected $rooms = [];
+    /** @var Room[] $Rooms */
+    protected $Rooms;
 
     /**
-     * @return array
+     * @return Room[]
      */
-    public function getRooms()
+    public function getRooms(): array
     {
-        return $this->rooms;
+        return $this->Rooms->findAll();
     }
 
     public function __construct(array $options = [])
     {
+        if ($this->Rooms == null) {
+            $this->Rooms = new Rooms();
+        }
+
         // no options to manage
     }
 
@@ -40,34 +46,25 @@ class Puzzle1 implements PuzzleInterface
         // split the string into an array
         $inputLines = explode("\n", trim($inputString));
 
-        $rooms = array_map(
-            function($string) {
-                preg_match("/(?P<encrypted_name>.+)-(?P<sector_id>\d+)\[(?P<checksum>.+)\]$/", $string, $matches);
+        foreach ($inputLines as $inputLine) {
+            preg_match("/(?P<encrypted_name>.+)-(?P<sector_id>\d+)\[(?P<checksum>.+)\]$/", $inputLine, $matches);
 
-                return [
-                    'raw' => $string,
-                    'checksum' => $matches['checksum'],
-                    'sector_id' => $matches['sector_id'],
-                    'encrypted_name' => $matches['encrypted_name'],
-                ];
-            },
-            $inputLines
-        );
+            $room = new Room();
+            $room->setRaw($inputLine);
+            $room->setChecksum($matches['checksum']);
+            $room->setSectorId($matches['sector_id']);
+            $room->setEncryptedName($matches['encrypted_name']);
 
-        $this->rooms = array_reduce(
-            $rooms,
-            function($result, $item) {
-                $result[$item['raw']] = $item;
-                return $result;
-            });
+            $this->Rooms->addRoom($room);
+        }
 
         return $this;
     }
 
-    public function calculateCharacterFrequency($room)
+    public function calculateCharacterFrequency(Room $room)
     {
         // remove dashes
-        $encryptedName = str_replace('-', '', $room['encrypted_name']);
+        $encryptedName = str_replace('-', '', $room->getEncryptedName());
 
         $frequency = [];
 
@@ -82,20 +79,17 @@ class Puzzle1 implements PuzzleInterface
             $frequency[$char]++;
         }
 
-        $this->rooms[$room['raw']]['character_frequency'] = $frequency;
+        $room->setCharacterFrequency($frequency);
 
         return $this;
     }
 
-    public function calculateTopFiveCharacters($room)
+    public function calculateTopFiveCharacters(Room $room)
     {
-        // calculate the character frequency 1st
-        $this->calculateCharacterFrequency($room);
-
         // work out the 5 characters to be used against the checksum
         // 1st sort by value
         // 2nd sort by key
-        $characterFrequency = $this->rooms[$room['raw']]['character_frequency'];
+        $characterFrequency = $room->getCharacterFrequency();
         array_multisort(
             array_values($characterFrequency), SORT_DESC,
             array_keys($characterFrequency), SORT_ASC,
@@ -105,21 +99,15 @@ class Puzzle1 implements PuzzleInterface
         // return the top 5 elements
         $topFive = array_slice($characterFrequency, 0, 5);
 
-        $this->rooms[$room['raw']]['top_five_characters'] = implode('', array_keys($topFive));
+        $room->setTopFiveCharacters(implode('', array_keys($topFive)));
 
         return $this;
     }
 
-    public function validateChecksums($room)
+    public function validateChecksum(Room $room)
     {
-        // generate real checksum for encrypted room name
-        $this->calculateTopFiveCharacters($room);
-
-        // refetch the room information
-        $room = $this->rooms[$room['raw']];
-
         // compare against the stored checksum
-        $this->rooms[$room['raw']]['valid_checksum'] = ($room['checksum'] == $room['top_five_characters']);
+        $room->setValidChecksum($room->getChecksum() == $room->getTopFiveCharacters());
 
         return $this;
     }
@@ -129,15 +117,22 @@ class Puzzle1 implements PuzzleInterface
         // loop over all of the rooms, validate their checksums and sum the ones that are real
 
         $sumTotal = 0;
-        foreach ($this->rooms as $room)
+        foreach ($this->getRooms() as $room)
         {
-            $this->validateChecksums($room);
-
-            if ($this->rooms[$room['raw']]['valid_checksum']) {
-                $sumTotal += $room['sector_id'];
+            if ($room->isValidChecksum()) {
+                $sumTotal += $room->getSectorId();
             }
         }
 
         return $sumTotal;
+    }
+
+    public function processRooms()
+    {
+        foreach ($this->getRooms() as $room) {
+            $this->calculateCharacterFrequency($room);
+            $this->calculateTopFiveCharacters($room);
+            $this->validateChecksum($room);
+        }
     }
 }

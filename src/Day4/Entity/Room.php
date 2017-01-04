@@ -8,22 +8,22 @@ class Room
     protected $raw;
 
     /** @var string $raw */
-    protected $checksum;
+    protected $checksum = '';
 
     /** @var int $sectorId */
-    protected $sectorId;
+    protected $sectorId = 0;
 
     /** @var string $encryptedName */
-    protected $encryptedName;
+    protected $encryptedName = '';
 
     /** @var array $characterFrequency */
-    protected $characterFrequency;
+    protected $characterFrequency = [];
 
     /** @var string $topFiveCharacters */
-    protected $topFiveCharacters;
+    protected $topFiveCharacters = '';
 
     /** @var bool $validChecksum */
-    protected $validChecksum;
+    protected $validChecksum = false;
 
     /**
      * @return string
