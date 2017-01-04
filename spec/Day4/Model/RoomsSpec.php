@@ -1,0 +1,49 @@
+<?php
+
+namespace spec\Day4\Model;
+
+use Day4\Entity\Room;
+use Day4\Model\Rooms;
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+
+class RoomsSpec extends ObjectBehavior
+{
+    function it_is_initializable()
+    {
+        $this->shouldHaveType(Rooms::class);
+    }
+
+    public function it_stores_a_room()
+    {
+        $room = new Room();
+        $this->addRoom($room);
+        $this->getRooms()->contains($room)->shouldBe(true);
+    }
+
+    public function it_removes_a_room()
+    {
+        $room = new Room();
+        $this->addRoom($room);
+        $this->getRooms()->contains($room)->shouldBe(true);
+
+        $this->delRoom($room);
+        $this->getRooms()->contains($room)->shouldBe(false);
+    }
+
+    public function it_returns_a_room_by_property_raw()
+    {
+        $room = new Room();
+        $room->setRaw('my room');
+
+        $this->addRoom($room);
+        $this->getRooms()->contains($room)->shouldBe(true);
+
+        $this->getRoomByRaw('my room')->shouldBeAnInstanceOf(Room::class);
+    }
+
+    public function it_returns_null_for_an_invalid_value_for_the_property_raw()
+    {
+        $this->getRoomByRaw('this room does not exist')->shouldBeNull();
+    }
+}
