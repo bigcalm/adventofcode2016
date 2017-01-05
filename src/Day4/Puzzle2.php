@@ -7,7 +7,21 @@ use PuzzleInterface;
 
 class Puzzle2 extends Puzzle1 implements PuzzleInterface
 {
+    public function processInput(string $input)
+    {
+        $this->parseString($input);
 
+        $this->processRooms();
+
+        foreach ($this->getRooms() as $room)
+        {
+            if (preg_match("/north/", $room->getDecryptedName())) {
+                echo $room->getSectorId() . "\t" . $room->getDecryptedName() . PHP_EOL;
+            }
+        }
+
+        return 'moo';
+    }
 
     public function rotateString(string $string, int $rotateCount): string
     {
