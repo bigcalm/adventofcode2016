@@ -6,6 +6,22 @@ use PuzzleInterface;
 
 class Puzzle2 extends Puzzle1 implements PuzzleInterface
 {
+    /** @var bool $animate */
+    public $animate = false;
+
+    public $password = ['_', '_', '_', '_', '_', '_', '_', '_'];
+
+    public $sequenceComplete = false;
+
+    public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+
+        if (in_array('--animate', $options)) {
+            $this->animate = true;
+        }
+    }
+
     public function findNextCharacterOfPassword()
     {
         $this->index++;
@@ -18,10 +34,14 @@ class Puzzle2 extends Puzzle1 implements PuzzleInterface
 
             if (substr($md5, 0, 5) === '00000'
                 && preg_match("/^[0-7]$/", $position)
-                && !isset($this->password[$position])
+                && $this->password[$position] == '_'
             ) {
                 $this->password[$position] = $character;
-//                var_dump($this->password);
+
+                if ($this->animate) {
+                    echo  $this->joinPasswordCharacters() . "\r";
+                }
+
                 return;
             }
 
@@ -38,8 +58,11 @@ class Puzzle2 extends Puzzle1 implements PuzzleInterface
 
     public function findFullPassword(int $length): string
     {
-        while(count($this->password) != 8) {
+        while(!$this->sequenceComplete) {
             $this->findNextCharacterOfPassword();
+            if (!in_array('_', $this->password)) {
+                $this->sequenceComplete = true;
+            }
         }
 
         return $this->joinPasswordCharacters();
