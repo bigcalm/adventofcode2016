@@ -7,23 +7,17 @@ class IP
     /** @var string $raw */
     protected $raw;
 
-    /** @var string $subnetAlpha */
-    protected $subnetAlpha;
+    /** @var array $subnets */
+    protected $subnets = [];
 
-    /** @var string $hypernet */
-    protected $hypernet;
+    /** @var array $hypernets */
+    protected $hypernets = [];
 
-    /** @var string $subnetOmega */
-    protected $subnetOmega;
+    /** @var array $subnetAbbaSequences */
+    protected $subnetAbbaSequences = [];
 
-    /** @var string|null $subnetAlphaAbbaSequence */
-    protected $subnetAlphaAbbaSequence;
-
-    /** @var string|null $hypernetAbbaSequence  */
-    protected $hypernetAbbaSequence;
-
-    /** @var string|null $subnetOmegaAbbaSequence */
-    protected $subnetOmegaAbbaSequence;
+    /** @var array $hypernetAbbaSequences  */
+    protected $hypernetAbbaSequences = [];
 
     /** @var bool $tlsSupported */
     protected $tlsSupported;
@@ -45,99 +39,99 @@ class IP
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getSubnetAlpha(): string
+    public function getSubnets(): array
     {
-        return $this->subnetAlpha;
+        return $this->subnets;
     }
 
     /**
-     * @param string $subnetAlpha
+     * @param array $subnets
      */
-    public function setSubnetAlpha(string $subnetAlpha)
+    public function setSubnets(array $subnets)
     {
-        $this->subnetAlpha = $subnetAlpha;
+        $this->subnets = $subnets;
     }
 
     /**
-     * @return string
+     * @param string $subnet
      */
-    public function getHypernet(): string
+    public function addSubnet(string $subnet)
     {
-        return $this->hypernet;
+        $this->subnets[] = $subnet;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHypernets(): array
+    {
+        return $this->hypernets;
+    }
+
+    /**
+     * @param array $hypernets
+     */
+    public function setHypernets(array $hypernets)
+    {
+        $this->hypernets = $hypernets;
     }
 
     /**
      * @param string $hypernet
      */
-    public function setHypernet(string $hypernet)
+    public function addHypernet(string $hypernet)
     {
-        $this->hypernet = $hypernet;
+        $this->hypernets[] = $hypernet;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getSubnetOmega(): string
+    public function getSubnetAbbaSequences(): array
     {
-        return $this->subnetOmega;
+        return $this->subnetAbbaSequences;
     }
 
     /**
-     * @param string $subnetOmega
+     * @param array $subnetAbbaSequences
      */
-    public function setSubnetOmega(string $subnetOmega)
+    public function setSubnetAbbaSequences(array $subnetAbbaSequences)
     {
-        $this->subnetOmega = $subnetOmega;
+        $this->subnetAbbaSequences = $subnetAbbaSequences;
     }
 
     /**
-     * @return null|string
+     * @param string $abbaSequence
      */
-    public function getSubnetAlphaAbbaSequence()
+    public function addSubnetAbbaSequence(string $abbaSequence)
     {
-        return $this->subnetAlphaAbbaSequence;
+        $this->subnetAbbaSequences[] = $abbaSequence;
     }
 
     /**
-     * @param null|string $subnetAlphaAbbaSequence
+     * @return array
      */
-    public function setSubnetAlphaAbbaSequence($subnetAlphaAbbaSequence)
+    public function getHypernetAbbaSequences(): array
     {
-        $this->subnetAlphaAbbaSequence = $subnetAlphaAbbaSequence;
+        return $this->hypernetAbbaSequences;
     }
 
     /**
-     * @return null|string
+     * @param array $hypernetAbbaSequences
      */
-    public function getHypernetAbbaSequence()
+    public function setHypernetAbbaSequences(array $hypernetAbbaSequences)
     {
-        return $this->hypernetAbbaSequence;
+        $this->hypernetAbbaSequences = $hypernetAbbaSequences;
     }
 
     /**
-     * @param null|string $hypernetAbbaSequence
+     * @param string $hypernetAbbaSequence
      */
-    public function setHypernetAbbaSequence($hypernetAbbaSequence)
+    public function addHypernetAbbaSequence(string $hypernetAbbaSequence)
     {
-        $this->hypernetAbbaSequence = $hypernetAbbaSequence;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getSubnetOmegaAbbaSequence()
-    {
-        return $this->subnetOmegaAbbaSequence;
-    }
-
-    /**
-     * @param null|string $subnetOmegaAbbaSequence
-     */
-    public function setSubnetOmegaAbbaSequence($subnetOmegaAbbaSequence)
-    {
-        $this->subnetOmegaAbbaSequence = $subnetOmegaAbbaSequence;
+        $this->hypernetAbbaSequences[] = $hypernetAbbaSequence;
     }
 
     /**
@@ -161,10 +155,14 @@ class IP
     {
         $this->raw = $string;
 
-        preg_match("/^(?P<subnetAlpha>.+)\[(?P<hypernet>.+)\](?P<subnetOmega>.+)$/", $string, $matches);
+        preg_match_all("/\[(?P<hypernets>.*)\]/U", $string, $matches, PREG_PATTERN_ORDER);
+        $this->hypernets = $matches['hypernets'];
 
-        $this->subnetAlpha = $matches['subnetAlpha'];
-        $this->hypernet = $matches['hypernet'];
-        $this->subnetOmega = $matches['subnetOmega'];
+        // strip out the hypernets
+        foreach ($this->hypernets as $hypernet) {
+            $string = str_replace('[' . $hypernet . ']', '-', $string);
+        }
+
+        $this->subnets = explode('-', $string);
     }
 }

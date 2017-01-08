@@ -76,9 +76,20 @@ class Puzzle1 implements PuzzleInterface
     public function findAbbaSequencesForAllIPs()
     {
         foreach ($this->IPs as $IP) {
-            $IP->setSubnetAlphaAbbaSequence($this->lookForAbbaSequence($IP->getSubnetAlpha()));
-            $IP->setHypernetAbbaSequence($this->lookForAbbaSequence($IP->getHypernet()));
-            $IP->setSubnetOmegaAbbaSequence($this->lookForAbbaSequence($IP->getSubnetOmega()));
+
+            foreach ($IP->getSubnets() as $subnet) {
+                $abbaSequence = $this->lookForAbbaSequence($subnet);
+                if ($abbaSequence != null) {
+                    $IP->addSubnetAbbaSequence($abbaSequence);
+                }
+            }
+
+            foreach ($IP->getHypernets() as $hypernet) {
+                $abbaSequence = $this->lookForAbbaSequence($hypernet);
+                if ($abbaSequence != null) {
+                    $IP->addHypernetAbbaSequence($abbaSequence);
+                }
+            }
 
             $IP->setTlsSupported($this->isTlsSupported($IP));
 
@@ -90,13 +101,13 @@ class Puzzle1 implements PuzzleInterface
 
     public function isTlsSupported(IP $IP)
     {
-        if ($IP->getHypernetAbbaSequence()) {
+        if (count($IP->getHypernetAbbaSequences()) > 0) {
             // don't bother checking further if there is an abba sequence in the hypernet
             return false;
         }
 
-        if (!$IP->getSubnetAlphaAbbaSequence() && !$IP->getSubnetOmegaAbbaSequence()) {
-            // nether alpha or omega subnets have an abba sequence
+        if (count($IP->getSubnetAbbaSequences()) < 1) {
+            // no abba sequences in the subnets
             return false;
         }
 

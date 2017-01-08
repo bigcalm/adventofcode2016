@@ -9,8 +9,8 @@ use Prophecy\Argument;
 class Puzzle1Spec extends ObjectBehavior
 {
     /** @var string $exampleInput */
-    public $exampleInput = 'abba[mnop]qrst
-abcd[bddb]xyyx
+    public $exampleInput = 'abba[mnop1]qrst1[mnop2]qrst2[mnop3]qrst3[mnop4]qrst4
+abcd[bddb]xyyx[dbbd]yxxy
 aaaa[qwer]tyui
 ioxxoj[asdfgh]zxcvbn
 ';
@@ -41,10 +41,20 @@ ioxxoj[asdfgh]zxcvbn
     {
         $this->parseString($this->exampleInput);
 
-        $this->IPs[0]->getRaw()->shouldBe('abba[mnop]qrst');
-        $this->IPs[0]->getSubnetAlpha()->shouldBe('abba');
-        $this->IPs[0]->getHypernet()->shouldBe('mnop');
-        $this->IPs[0]->getSubnetOmega()->shouldBe('qrst');
+        $this->IPs[0]->getRaw()->shouldBe('abba[mnop1]qrst1[mnop2]qrst2[mnop3]qrst3[mnop4]qrst4');
+
+        $this->IPs[0]->getSubnets()->shouldBeArray();
+        $this->IPs[0]->getSubnets()[0]->shouldBe('abba');
+        $this->IPs[0]->getSubnets()[1]->shouldBe('qrst1');
+        $this->IPs[0]->getSubnets()[2]->shouldBe('qrst2');
+        $this->IPs[0]->getSubnets()[3]->shouldBe('qrst3');
+        $this->IPs[0]->getSubnets()[4]->shouldBe('qrst4');
+
+        $this->IPs[0]->getHypernets()->shouldBeArray();
+        $this->IPs[0]->getHypernets()[0]->shouldBe('mnop1');
+        $this->IPs[0]->getHypernets()[1]->shouldBe('mnop2');
+        $this->IPs[0]->getHypernets()[2]->shouldBe('mnop3');
+        $this->IPs[0]->getHypernets()[3]->shouldBe('mnop4');
     }
 
     function it_detects_an_abba_sequence()
@@ -66,21 +76,29 @@ ioxxoj[asdfgh]zxcvbn
 
         $this->findAbbaSequencesForAllIPs();
 
-        $this->IPs[0]->getSubnetAlphaAbbaSequence()->shouldBe('abba');
-        $this->IPs[0]->getHypernetAbbaSequence()->shouldBeNull();
-        $this->IPs[0]->getSubnetOmegaAbbaSequence()->shouldBeNull();
+        $this->IPs[0]->getSubnetAbbaSequences()->shouldBeArray();
+        $this->IPs[0]->getSubnetAbbaSequences()->shouldHaveCount(1);
+        $this->IPs[0]->getSubnetAbbaSequences()[0]->shouldBe('abba');
+        $this->IPs[0]->getHypernetAbbaSequences()->shouldBeArray();
+        $this->IPs[0]->getHypernetAbbaSequences()->shouldHaveCount(0);
 
-        $this->IPs[1]->getSubnetAlphaAbbaSequence()->shouldBeNull();
-        $this->IPs[1]->getHypernetAbbaSequence()->shouldBe('bddb');
-        $this->IPs[1]->getSubnetOmegaAbbaSequence()->shouldBe('xyyx');
+        $this->IPs[1]->getSubnetAbbaSequences()->shouldBeArray();
+        $this->IPs[1]->getSubnetAbbaSequences()->shouldHaveCount(2);
+        $this->IPs[1]->getSubnetAbbaSequences()[0]->shouldBe('xyyx');
+        $this->IPs[1]->getHypernetAbbaSequences()->shouldBeArray();
+        $this->IPs[1]->getHypernetAbbaSequences()->shouldHaveCount(2);
+        $this->IPs[1]->getHypernetAbbaSequences()[0]->shouldBe('bddb');
 
-        $this->IPs[2]->getSubnetAlphaAbbaSequence()->shouldBeNull();
-        $this->IPs[2]->getHypernetAbbaSequence()->shouldBeNull();
-        $this->IPs[2]->getSubnetOmegaAbbaSequence()->shouldBeNull();
+        $this->IPs[2]->getSubnetAbbaSequences()->shouldBeArray();
+        $this->IPs[2]->getSubnetAbbaSequences()->shouldHaveCount(0);
+        $this->IPs[2]->getHypernetAbbaSequences()->shouldBeArray();
+        $this->IPs[2]->getHypernetAbbaSequences()->shouldHaveCount(0);
 
-        $this->IPs[3]->getSubnetAlphaAbbaSequence()->shouldBe('oxxo');
-        $this->IPs[3]->getHypernetAbbaSequence()->shouldBeNull();
-        $this->IPs[3]->getSubnetOmegaAbbaSequence()->shouldBeNull();
+        $this->IPs[3]->getSubnetAbbaSequences()->shouldBeArray();
+        $this->IPs[3]->getSubnetAbbaSequences()->shouldHaveCount(1);
+        $this->IPs[3]->getSubnetAbbaSequences()[0]->shouldBe('oxxo');
+        $this->IPs[3]->getHypernetAbbaSequences()->shouldBeArray();
+        $this->IPs[3]->getHypernetAbbaSequences()->shouldHaveCount(0);
     }
 
     function it_supports_tls()
@@ -90,8 +108,6 @@ ioxxoj[asdfgh]zxcvbn
         $this->findAbbaSequencesForAllIPs();
 
         $this->IPs[0]->isTlsSupported()->shouldBe(true);
-        $this->IPs[1]->isTlsSupported()->shouldBe(false);
-        $this->IPs[2]->isTlsSupported()->shouldBe(false);
         $this->IPs[3]->isTlsSupported()->shouldBe(true);
     }
 
@@ -100,6 +116,9 @@ ioxxoj[asdfgh]zxcvbn
         $this->parseString($this->exampleInput);
 
         $this->findAbbaSequencesForAllIPs();
+
+        $this->IPs[1]->isTlsSupported()->shouldBe(false);
+        $this->IPs[2]->isTlsSupported()->shouldBe(false);
     }
 
     function it_counts_how_many_IPs_support_tls()
