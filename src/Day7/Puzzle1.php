@@ -77,10 +77,10 @@ class Puzzle1 implements PuzzleInterface
     {
         foreach ($this->IPs as $IP) {
 
-            foreach ($IP->getSubnets() as $subnet) {
-                $abbaSequence = $this->lookForAbbaSequence($subnet);
+            foreach ($IP->getSupernets() as $supernet) {
+                $abbaSequence = $this->lookForAbbaSequence($supernet);
                 if ($abbaSequence != null) {
-                    $IP->addSubnetAbbaSequence($abbaSequence);
+                    $IP->addSupernetAbbaSequence($abbaSequence);
                 }
             }
 
@@ -106,8 +106,8 @@ class Puzzle1 implements PuzzleInterface
             return false;
         }
 
-        if (count($IP->getSubnetAbbaSequences()) < 1) {
-            // no abba sequences in the subnets
+        if (count($IP->getSupernetAbbaSequences()) < 1) {
+            // no abba sequences in the supernets
             return false;
         }
 

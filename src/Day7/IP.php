@@ -7,14 +7,14 @@ class IP
     /** @var string $raw */
     protected $raw;
 
-    /** @var array $subnets */
-    protected $subnets = [];
+    /** @var array $supernets */
+    protected $supernets = [];
 
     /** @var array $hypernets */
     protected $hypernets = [];
 
-    /** @var array $subnetAbbaSequences */
-    protected $subnetAbbaSequences = [];
+    /** @var array $supernetAbbaSequences */
+    protected $supernetAbbaSequences = [];
 
     /** @var array $hypernetAbbaSequences  */
     protected $hypernetAbbaSequences = [];
@@ -41,25 +41,25 @@ class IP
     /**
      * @return array
      */
-    public function getSubnets(): array
+    public function getSupernets(): array
     {
-        return $this->subnets;
+        return $this->supernets;
     }
 
     /**
-     * @param array $subnets
+     * @param array $supernets
      */
-    public function setSubnets(array $subnets)
+    public function setSupernets(array $supernets)
     {
-        $this->subnets = $subnets;
+        $this->supernets = $supernets;
     }
 
     /**
-     * @param string $subnet
+     * @param string $supernet
      */
-    public function addSubnet(string $subnet)
+    public function addSupernet(string $supernet)
     {
-        $this->subnets[] = $subnet;
+        $this->supernets[] = $supernet;
     }
 
     /**
@@ -89,25 +89,25 @@ class IP
     /**
      * @return array
      */
-    public function getSubnetAbbaSequences(): array
+    public function getSupernetAbbaSequences(): array
     {
-        return $this->subnetAbbaSequences;
+        return $this->supernetAbbaSequences;
     }
 
     /**
-     * @param array $subnetAbbaSequences
+     * @param array $supernetAbbaSequences
      */
-    public function setSubnetAbbaSequences(array $subnetAbbaSequences)
+    public function setSupernetAbbaSequences(array $supernetAbbaSequences)
     {
-        $this->subnetAbbaSequences = $subnetAbbaSequences;
+        $this->supernetAbbaSequences = $supernetAbbaSequences;
     }
 
     /**
      * @param string $abbaSequence
      */
-    public function addSubnetAbbaSequence(string $abbaSequence)
+    public function addSupernetAbbaSequence(string $abbaSequence)
     {
-        $this->subnetAbbaSequences[] = $abbaSequence;
+        $this->supernetAbbaSequences[] = $abbaSequence;
     }
 
     /**
@@ -163,6 +163,6 @@ class IP
             $string = str_replace('[' . $hypernet . ']', '-', $string);
         }
 
-        $this->subnets = explode('-', $string);
+        $this->supernets = explode('-', $string);
     }
 }
