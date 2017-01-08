@@ -19,8 +19,17 @@ class IP
     /** @var array $hypernetAbbaSequences  */
     protected $hypernetAbbaSequences = [];
 
+    /** @var array $abaSequences */
+    protected $abaSequences = [];
+
+    /** @var array $babSequences */
+    protected $babSequences = [];
+
     /** @var bool $tlsSupported */
     protected $tlsSupported;
+
+    /** @var bool $sslSupported */
+    protected $sslSupported = false;
 
     /**
      * @return string
@@ -150,6 +159,69 @@ class IP
         $this->tlsSupported = $tlsSupported;
     }
 
+    /**
+     * @return array
+     */
+    public function getAbaSequences(): array
+    {
+        return $this->abaSequences;
+    }
+
+    /**
+     * @param array $abaSequences
+     */
+    public function setAbaSequences(array $abaSequences)
+    {
+        $this->abaSequences = $abaSequences;
+    }
+
+    /**
+     * @param array $abaSequences
+     */
+    public function addAbaSequences(array $abaSequences)
+    {
+        $this->abaSequences = array_merge($this->abaSequences, $abaSequences);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBabSequences(): array
+    {
+        return $this->babSequences;
+    }
+
+    /**
+     * @param array $babSequences
+     */
+    public function setBabSequences(array $babSequences)
+    {
+        $this->babSequences = $babSequences;
+    }
+
+    /**
+     * @param array $babSequences
+     */
+    public function addBabSequences(array $babSequences)
+    {
+        $this->babSequences = array_merge($this->babSequences, $babSequences);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSslSupported(): bool
+    {
+        return $this->sslSupported;
+    }
+
+    /**
+     * @param bool $sslSupported
+     */
+    public function setSslSupported(bool $sslSupported)
+    {
+        $this->sslSupported = $sslSupported;
+    }
 
     public function __construct($string)
     {
