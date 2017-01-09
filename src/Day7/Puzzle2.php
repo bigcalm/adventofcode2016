@@ -4,7 +4,7 @@ namespace Day7;
 
 use PuzzleInterface;
 
-class Puzzle2 extends Puzzle1 implements PuzzleInterface
+class Puzzle2 extends Puzzle1
 {
     /** @var int $numberOfIPsThatSupportSsl */
     public $numberOfIPsThatSupportSsl = 0;
