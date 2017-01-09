@@ -13,7 +13,7 @@ class Puzzle2 extends Puzzle1 implements PuzzleInterface
     {
         parent::processInput($input);
 
-        $this->findAbbaSequencesForAllIPs();
+        $this->findAbaAndBabSequencesForAllIPs();
 
         return $this->numberOfIPsThatSupportSsl;
     }

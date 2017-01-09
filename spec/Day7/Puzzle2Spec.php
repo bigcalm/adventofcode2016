@@ -12,6 +12,11 @@ class Puzzle2Spec extends ObjectBehavior
 xyx[xyx]xyx
 aaa[kek]eke
 zazbz[bzb]cdb
+rhamaeovmbheijj[hkwbkqzlcscwjkyjulk]ajsxfuemamuqcjccbc
+gdlrknrmexvaypu[crqappbbcaplkkzb]vhvkjyadjsryysvj[nbvypeadikilcwg]jwxlimrgakadpxu[dgoanojvdvwfabtt]yqsalmulblolkgsheo
+dqpthtgufgzjojuvzvm[eejdhpcqyiydwod]iingwezvcbtowwzc[uzlxaqenhgsebqskn]wcucfmnlarrvdceuxqc[dkwcsxeitcobaylhbvc]klxammurpqgmpsxsr
+gmmfbtpprishiujnpdi[wedykxqyntvrkfdzom]uidgvubnregvorgnhm
+txxplravpgztjqcw[txgmmtlhmqpmmwp]bmhfgpmafxqwtrpr[inntmjmgqothdzfqgxq]cvtwvembpvdmcvk
 ';
     function it_is_initializable()
     {
@@ -87,6 +92,11 @@ zazbz[bzb]cdb
         $this->findAbaAndBabSequencesForAllIPs();
 
         $this->IPs[1]->isSslSupported()->shouldBe(false);
+        $this->IPs[4]->isSslSupported()->shouldBe(false);
+        $this->IPs[5]->isSslSupported()->shouldBe(false);
+        $this->IPs[6]->isSslSupported()->shouldBe(false);
+        $this->IPs[7]->isSslSupported()->shouldBe(false);
+        $this->IPs[8]->isSslSupported()->shouldBe(false);
     }
 
     function it_counts_how_many_IPs_support_ssl()
